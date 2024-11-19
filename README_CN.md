@@ -1,6 +1,10 @@
 # 串口数据采集器
 
+[English](README.md)
+
 一个支持多串口并发采集的跨平台串口数据采集工具。
+
+![run](images/run.png)
 
 ## 功能特点
 

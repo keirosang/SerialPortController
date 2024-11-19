@@ -1,6 +1,10 @@
 # Serial Port Data Collector
 
+[中文](README_CN.md)
+
 A cross-platform serial port data collection tool that supports multiple ports simultaneously.
+
+![run](images/run.png)
 
 ## Features
 
