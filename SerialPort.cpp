@@ -1,5 +1,6 @@
 #include "SerialPort.h"
 #include <iostream>
+#include "Logger.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -30,6 +31,8 @@ bool SerialPort::open() {
         NULL);
 
     if (m_handle == INVALID_HANDLE_VALUE) {
+        DWORD error = GetLastError();
+        LOG_ERROR(m_config.name, "Failed to open port with error: " + std::to_string(error));
         return false;
     }
 
@@ -113,12 +116,20 @@ bool SerialPort::read(std::vector<char>& buffer) {
     DWORD bytesRead = 0;
 
 #ifdef _WIN32
-    if (!ReadFile(m_handle, buffer.data(), buffer.size(), &bytesRead, NULL)) {
+    if (buffer.size() > MAXDWORD) {
+        LOG_ERROR(m_config.name, "Buffer size exceeds DWORD maximum");
+        return false;
+    }
+
+    if (!ReadFile(m_handle, buffer.data(), static_cast<DWORD>(buffer.size()), &bytesRead, NULL)) {
+        DWORD error = GetLastError();
+        LOG_ERROR(m_config.name, "ReadFile failed with error: " + std::to_string(error));
         return false;
     }
 #else
     bytesRead = ::read(m_handle, buffer.data(), buffer.size());
     if (bytesRead < 0) {
+        LOG_ERROR(m_config.name, "Read failed with error: " + std::string(strerror(errno)));
         return false;
     }
 #endif
