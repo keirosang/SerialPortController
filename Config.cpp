@@ -26,6 +26,14 @@ bool Config::load(const std::string& filename, std::vector<PortConfig>& configs)
             config.parity = port["parity"].get<std::string>();
             config.addTimestamp = port["addTimestamp"].get<bool>();
             config.timeout = port.value("timeout", 60);
+            config.tcpForward.enabled = port.value("tcpForward", json::object())
+                .value("enabled", false);
+            config.tcpForward.server = port.value("tcpForward", json::object())
+                .value("server", "127.0.0.1");
+            config.tcpForward.port = port.value("tcpForward", json::object())
+                .value("port", 8080);
+            config.tcpForward.reconnectInterval = port.value("tcpForward", json::object())
+                .value("reconnectInterval", 5);
             configs.push_back(config);
         }
     }
