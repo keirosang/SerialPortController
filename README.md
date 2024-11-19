@@ -13,20 +13,28 @@ A cross-platform serial port data collection tool that supports multiple ports s
 - Real-time status display with color indicators
 - Automatic data file management
 - Cross-platform support (Windows/Linux)
+- TCP forwarding
 
 ## Directory Structure
 
 ```bash
 SerialPortCollector/
-├── CPP/
-│   ├── main.cpp          # Main program entry
-│   ├── SerialPort.h      # Serial port class declaration
-│   ├── SerialPort.cpp    # Serial port implementation
-│   ├── Config.h          # Configuration class declaration
-│   ├── Config.cpp        # Configuration implementation
-│   └── CMakeLists.txt    # CMake build configuration
-├── data/                 # Data storage directory (auto-created)
-└── config.json          # Port configuration file
+├── main.cpp          # Main program entry
+├── SerialPort.h      # Serial port class declaration
+├── SerialPort.cpp    # Serial port implementation
+├── Config.h          # Configuration class declaration
+├── Config.cpp        # Configuration implementation
+├── TcpClient.h       # TCP client class declaration
+├── TcpClient.cpp     # TCP client implementation
+├── Common.h          # Common definitions
+├── Logger.h          # Logger class
+├── CMakeLists.txt    # CMake build configuration
+├── changelog.txt     # Version changelog
+├── README.md         # English documentation
+├── README_CN.md      # Chinese documentation
+├── data/            # Data storage directory (auto-created)
+├── error/           # Error log directory (auto-created)
+└── config.json      # Port configuration file
 ```
 
 ## File Description
@@ -66,6 +74,10 @@ struct PortConfig {
     std::string parity;    // Parity mode
     bool addTimestamp;     // Enable timestamp
     int timeout;           // Timeout in seconds
+    bool enabled;          // Enable TCP forwarding
+    std::string server;     // TCP server address
+    int port;              // TCP server port
+    int reconnectInterval;  // Reconnection interval in seconds
 };
 ```
 
@@ -151,7 +163,11 @@ sudo apt-get install nlohmann-json3-dev
             "stopBits": 1,
             "parity": "none",
             "addTimestamp": true,
-            "timeout": 60
+            "timeout": 60,
+            "enabled": true,
+            "server": "127.0.0.1",
+            "port": 12345,
+            "reconnectInterval": 30
         }
     ]
 }
@@ -165,6 +181,10 @@ sudo apt-get install nlohmann-json3-dev
 - parity: Parity check ("none", "odd", "even")
 - addTimestamp: Enable timestamp in data
 - timeout: Data timeout threshold in seconds
+- enabled: Enable TCP forwarding (true/false)
+- server: TCP server address
+- port: TCP server port
+- reconnectInterval: Reconnection interval in seconds
 
 ## Runtime Status Display
 
@@ -345,3 +365,18 @@ sudo journalctl -u serialportcollector
    - Ensure correct config file location
    - Consider adding error logging
    - Ensure data directory has write permissions
+
+## Version History
+
+### v1.0.2 (2024-01-19)
+- Added TCP data forwarding feature
+- Added error logging system
+- Improved status display mechanism
+- Optimized performance and stability
+- Enhanced error handling
+
+### v1.0.1 (2024-01-18)
+- Initial release
+- Multi-port data collection
+- Real-time status display
+- Data file management

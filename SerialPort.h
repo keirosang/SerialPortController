@@ -1,4 +1,5 @@
 #pragma once
+#include "Common.h"
 #include <string>
 #include <vector>
 
@@ -10,6 +11,7 @@ struct PortConfig {
     std::string parity;
     bool addTimestamp;
     int timeout;
+    TcpConfig tcpForward;
 };
 
 class SerialPort {

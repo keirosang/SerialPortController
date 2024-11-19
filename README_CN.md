@@ -13,19 +13,27 @@
 - 实时状态显示，带颜色指示
 - 自动数据文件管理
 - 跨平台支持（Windows/Linux）
+- 支持 TCP 转发
 
 ## 目录结构
 ```bash
 SerialPortCollector/
-├── CPP/
-│   ├── main.cpp          # 主程序入口
-│   ├── SerialPort.h      # 串口类声明
-│   ├── SerialPort.cpp    # 串口实现
-│   ├── Config.h          # 配置类声明
-│   ├── Config.cpp        # 配置实现
-│   └── CMakeLists.txt    # CMake 构建配置
-├── data/                 # 数据存储目录（自动创建）
-└── config.json          # 串口配置文件
+├── main.cpp          # 主程序入口
+├── SerialPort.h      # 串口类声明
+├── SerialPort.cpp    # 串口实现
+├── Config.h          # 配置类声明
+├── Config.cpp        # 配置实现
+├── TcpClient.h       # TCP客户端类声明
+├── TcpClient.cpp     # TCP客户端实现
+├── Common.h          # 公共定义
+├── Logger.h          # 日志类
+├── CMakeLists.txt    # CMake 构建配置
+├── changelog.txt     # 版本更新日志
+├── README.md         # 英文说明文档
+├── README_CN.md      # 中文说明文档
+├── data/            # 数据存储目录（自动创建）
+├── error/           # 错误日志目录（自动创建）
+└── config.json      # 串口配置文件
 ```
 ## 文件说明
 
@@ -44,6 +52,18 @@ SerialPortCollector/
 - 配置文件管理
 - JSON 配置解析
 - 默认配置生成
+
+### TcpClient.h/cpp
+- TCP 客户端类的实现
+- 跨平台 TCP 操作封装
+- 支持 Windows 和 Linux 系统
+
+### Common.h/cpp
+- 公共定义和工具函数
+
+### Logger.h/cpp
+- 日志类的实现
+- 跨平台日志记录
 
 ### CMakeLists.txt
 - CMake 项目配置
@@ -64,6 +84,10 @@ struct PortConfig {
     std::string parity;    // 校验方式
     bool addTimestamp;     // 是否添加时间戳
     int timeout;           // 超时时间（秒）
+    bool enabled;          // 是否启用 TCP 转发
+    std::string server;     // TCP 服务器地址
+    int port;              // TCP 服务器端口
+    int reconnectInterval;  // 重连间隔（秒）
 };
 ```
 
@@ -76,6 +100,11 @@ struct PortConfig {
 - 配置文件的读取和解析
 - 默认配置的生成
 - 配置验证和错误处理
+
+#### TcpClient 类
+- 负责 TCP 客户端的连接、发送、接收操作
+- 支持跨平台实现
+- 错误处理和状态管理
 
 ## 开发环境
 
@@ -144,7 +173,11 @@ make
             "stopBits": 1,
             "parity": "none",
             "addTimestamp": true,
-            "timeout": 60
+            "timeout": 60,
+            "enabled": true,
+            "server": "127.0.0.1",
+            "port": 12345,
+            "reconnectInterval": 60
         }
     ]
 }
@@ -157,6 +190,10 @@ make
 - parity: 校验方式（none, odd, even）
 - addTimestamp: 是否在数据中添加时间戳
 - timeout: 无数据超时时间（秒）
+- enabled: 是否启用 TCP 转发
+- server: TCP 服务器地址
+- port: TCP 服务器端口
+- reconnectInterval: 重连间隔（秒）
 
 ## 运行时状态显示
 
@@ -336,3 +373,18 @@ sudo journalctl -u serialportcollector
    - 确保配置文件位置正确
    - 建议添加错误日志记录
    - 确保数据存储目录有写入权限
+
+## 版本历史
+
+### v1.0.2 (2024-01-19)
+- 添加 TCP 数据转发功能
+- 添加错误日志系统
+- 改进状态显示机制
+- 优化性能和稳定性
+- 增强错误处理
+
+### v1.0.1 (2024-01-18)
+- 初始版本发布
+- 多串口数据采集
+- 实时状态显示
+- 数据文件管理

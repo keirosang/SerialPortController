@@ -1,0 +1,34 @@
+{
+    "ports": [
+        {
+            "addTimestamp": true,
+            "baudRate": 9600,
+            "dataBits": 8,
+            "name": "COM3",
+            "parity": "none",
+            "stopBits": 1,
+            "timeout": 10,
+			"tcpForward": {
+                "enabled": false,
+                "server": "127.0.0.1",
+                "port": 8080,
+                "reconnectInterval": 5
+            }
+        },
+		{
+            "addTimestamp": false,
+            "baudRate": 9600,
+            "dataBits": 8,
+            "name": "COM5",
+            "parity": "none",
+            "stopBits": 1,
+            "timeout": 30,
+			"tcpForward": {
+                "enabled": true,
+                "server": "127.0.0.1",
+                "port": 8080,
+                "reconnectInterval": 5
+            }
+        }
+    ]
+}
